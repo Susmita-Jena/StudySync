@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log in — StudySync</title>
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#10132A">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Caveat:wght@500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="classic-dark">
+
+<div class="auth-page">
+  <div class="auth-card">
+    <a href="/landing.html" class="auth-back">
+      <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to home
+    </a>
+
+    <div class="auth-card__brand">
+      <svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="19" fill="none" stroke="url(#authGrad)" stroke-width="7" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="22" transform="rotate(-90 32 32)"/><circle cx="32" cy="32" r="6" fill="currentColor"/><defs><linearGradient id="authGrad" x1="6" y1="6" x2="58" y2="58"><stop stop-color="#8B7FFF"/><stop offset="1" stop-color="#3FE0D0"/></linearGradient></defs></svg>
+      <span>StudySync</span>
+    </div>
+
+    <div class="auth-panel">
+      <div class="auth-tabs">
+        <button class="auth-tab" id="tabLogin">Log in</button>
+        <button class="auth-tab" id="tabSignup">Sign up</button>
+      </div>
+
+      <div class="auth-error" id="authError">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 5V8.5M8 11H8.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <span id="authErrorText"></span>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form id="loginForm">
+        <h1 class="auth-title">Welcome back</h1>
+        <p class="auth-subtitle">Pick up the streak where you left it.</p>
+        <div class="field">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" required autocomplete="email" placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required autocomplete="current-password" placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn--primary btn--block btn--lg" id="loginSubmit">Log in</button>
+      </form>
+
+      <!-- SIGNUP FORM -->
+      <form id="signupForm" style="display:none;">
+        <h1 class="auth-title">Start your streak</h1>
+        <p class="auth-subtitle">Takes about 20 seconds. No email verification maze.</p>
+        <div class="field">
+          <label for="signupName">Name</label>
+          <input type="text" id="signupName" required autocomplete="name" placeholder="What should we call you?">
+        </div>
+        <div class="field">
+          <label for="signupEmail">Email</label>
+          <input type="email" id="signupEmail" required autocomplete="email" placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" required autocomplete="new-password" placeholder="At least 6 characters">
+        </div>
+        <button type="submit" class="btn btn--primary btn--block btn--lg" id="signupSubmit">Create account</button>
+      </form>
+
+      <p class="auth-switch" id="authSwitch"></p>
+    </div>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script src="auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudySync — dashboard</title>
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#10132A">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Caveat:wght@500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="classic-dark">
+
+<div class="app" id="appRoot" style="display:none;">
+
+  <!-- ===== LEFT RAIL ===== -->
+  <aside class="rail rail--left">
+    <div class="brand">
+      <svg class="brand__mark" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="19" fill="none" stroke="url(#railGrad)" stroke-width="7" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="22" transform="rotate(-90 32 32)"/><circle cx="32" cy="32" r="6" fill="currentColor"/><defs><linearGradient id="railGrad" x1="6" y1="6" x2="58" y2="58"><stop stop-color="#C38EB4"/><stop offset="1" stop-color="#86A8CF"/></linearGradient></defs></svg>
+      <span class="brand__name">StudySync</span>
+    </div>
+
+    <div class="streak-summary">
+      <span class="streak-summary__label">Streak</span>
+      <div class="sync-rings-wrap" id="railRingsWrap" style="width:64px;height:64px;">
+        <svg id="railRings" viewBox="0 0 128 128" width="64" height="64"></svg>
+        <div class="rings__center">
+          <span class="rings__center-num" id="streakCount" style="font-size:1rem;">0</span>
+        </div>
+      </div>
+    </div>
+
+    <nav class="nav" aria-label="Main">
+      <button class="nav__item is-active" data-view="tasks">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10L8 14L16 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Tasks</span>
+        <span class="nav__count" id="taskNavCount">0</span>
+      </button>
+      <button class="nav__item" data-view="pomodoro">
+        <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.2" stroke="currentColor" stroke-width="1.8"/><path d="M10 6V10L12.5 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Focus timer</span>
+      </button>
+      <button class="nav__item" data-view="recharge">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M10 18C10 18 3 12.5 3 7.8C3 5.1 5.1 3 7.8 3C9 3 10 3.6 10 3.6C10 3.6 11 3 12.2 3C14.9 3 17 5.1 17 7.8C17 12.5 10 18 10 18Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <span>Recharge</span>
+      </button>
+      <button class="nav__item" data-view="progress">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M8 1L9.8 5.6L14.7 6L11 9.2L12.1 14L8 11.4L3.9 14L5 9.2L1.3 6L6.2 5.6L8 1Z" fill="currentColor"/></svg>
+        <span>Progress</span>
+      </button>
+      <button class="nav__item" data-view="themes">
+        <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.6"/><path d="M10 2.5C10 2.5 13.5 6 13.5 9.5C13.5 11.7 11.9 13.5 10 13.5C8.6 13.5 7.5 12.4 7.5 11C7.5 9.9 8.3 9 9.3 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <span>Themes</span>
+      </button>
+    </nav>
+
+    <div class="rail__spacer"></div>
+
+    <button class="theme-toggle" id="logoutBtn" aria-label="Log out">
+      <svg class="theme-toggle__icon" viewBox="0 0 20 20" fill="none" style="display:block;color:var(--text-tertiary);"><path d="M8 3H4.5C3.7 3 3 3.7 3 4.5V15.5C3 16.3 3.7 17 4.5 17H8M13 14L17 10M17 10L13 6M17 10H7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Log out</span>
+    </button>
+  </aside>
+
+  <!-- ===== MAIN CANVAS ===== -->
+  <main class="canvas">
+
+    <div class="status-banner" id="statusBanner">
+      <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 6V10.5M10 13.5H10.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span id="statusBannerText">Working offline — changes won't save until the connection to StudySync comes back.</span>
+    </div>
+
+    <!-- ---------- TASKS VIEW ---------- -->
+    <section class="view is-active" id="view-tasks">
+      <header class="view-head">
+        <div>
+          <p class="view-head__eyebrow" id="dateToday">Loading date…</p>
+          <h1 class="view-head__title" id="greeting">Let's get something done</h1>
+        </div>
+        <div class="xp-chip">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M8 1L9.8 5.6L14.7 6L11 9.2L12.1 14L8 11.4L3.9 14L5 9.2L1.3 6L6.2 5.6L8 1Z" fill="currentColor"/></svg>
+          <span><span id="xpCount">0</span> XP</span>
+        </div>
+      </header>
+
+      <form class="task-add" id="taskForm">
+        <input type="text" id="taskInput" class="task-add__input" placeholder="Add a task — e.g. Finish DSA assignment" autocomplete="off">
+        <select id="taskPriority" class="task-add__priority">
+          <option value="low">Low</option>
+          <option value="mid" selected>Mid</option>
+          <option value="high">High</option>
+        </select>
+        <button type="submit" class="task-add__btn" aria-label="Add task">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </form>
+
+      <div class="task-list" id="taskList"></div>
+
+      <div class="empty-state" id="emptyState">
+        <svg viewBox="0 0 64 64" fill="none"><rect x="14" y="10" width="36" height="46" rx="4" stroke="currentColor" stroke-width="2"/><path d="M22 22H42M22 30H42M22 38H34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <p>Nothing on the list yet.</p>
+        <span>Add the smallest possible task — momentum starts stupid small.</span>
+      </div>
+    </section>
+
+    <!-- ---------- POMODORO VIEW ---------- -->
+    <section class="view" id="view-pomodoro">
+      <header class="view-head">
+        <div>
+          <p class="view-head__eyebrow">Focus timer</p>
+          <h1 class="view-head__title">One block. Full attention.</h1>
+        </div>
+      </header>
+
+      <div class="pomo">
+        <div class="pomo__ring-wrap">
+          <svg class="pomo__ring" viewBox="0 0 240 240">
+            <circle class="pomo__ring-track" cx="120" cy="120" r="108"/>
+            <circle class="pomo__ring-progress" id="pomoRing" cx="120" cy="120" r="108"/>
+          </svg>
+          <div class="pomo__center">
+            <span class="pomo__time" id="pomoTime">25:00</span>
+            <span class="pomo__phase" id="pomoPhase">Focus session</span>
+          </div>
+        </div>
+
+        <div class="pomo__modes" id="pomoModes">
+          <button class="pomo__mode is-active" data-mins="25">25 focus</button>
+          <button class="pomo__mode" data-mins="50">50 deep work</button>
+          <button class="pomo__mode" data-mins="5">5 short break</button>
+          <button class="pomo__mode" data-mins="15">15 long break</button>
+        </div>
+
+        <div class="pomo__controls">
+          <button class="pomo__btn pomo__btn--ghost" id="pomoReset">Reset</button>
+          <button class="pomo__btn pomo__btn--primary" id="pomoStart">Start focus</button>
+        </div>
+
+        <p class="pomo__stat">Sessions completed today: <strong id="pomoSessions">0</strong></p>
+      </div>
+    </section>
+
+    <!-- ---------- RECHARGE VIEW ---------- -->
+    <section class="view" id="view-recharge">
+      <header class="view-head">
+        <div style="position:relative;">
+          <svg class="sparkle" viewBox="0 0 20 20" fill="currentColor" width="16" height="16" style="left:-22px; top:-6px;"><path d="M10 0L11.8 8.2L20 10L11.8 11.8L10 20L8.2 11.8L0 10L8.2 8.2L10 0Z"/></svg>
+          <p class="view-head__eyebrow">Recharge</p>
+          <h1 class="view-head__title">Take an actual break</h1>
+        </div>
+      </header>
+
+      <div class="recharge-grid">
+        <div class="recharge-card">
+          <h2 class="recharge-card__title">
+            <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.2" stroke="currentColor" stroke-width="1.8"/><path d="M7 8.5H7.01M13 8.5H13.01M6.8 12.2C7.6 13.3 8.7 14 10 14C11.3 14 12.4 13.3 13.2 12.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            How's today going?
+          </h2>
+          <div class="mood-picker" id="moodPicker">
+            <button class="mood-opt" data-mood="great" data-color="ok">
+              <span class="mood-opt__face">◠◡◠</span><span>Great</span>
+            </button>
+            <button class="mood-opt" data-mood="good" data-color="primary">
+              <span class="mood-opt__face">⌣ ‿ ⌣</span><span>Good</span>
+            </button>
+            <button class="mood-opt" data-mood="meh" data-color="info">
+              <span class="mood-opt__face">– ‿ –</span><span>Meh</span>
+            </button>
+            <button class="mood-opt" data-mood="stressed" data-color="warn">
+              <span class="mood-opt__face">⌢ ‿ ⌢</span><span>Stressed</span>
+            </button>
+            <button class="mood-opt" data-mood="low" data-color="slate">
+              <span class="mood-opt__face">⌢ – ⌢</span><span>Low</span>
+            </button>
+          </div>
+          <textarea id="moodNote" class="mood-note" placeholder="Optional note…" rows="2"></textarea>
+          <button class="mood-save" id="moodSave">Log today's mood</button>
+          <div class="mood-strip" id="moodStrip"></div>
+        </div>
+
+        <div class="recharge-card">
+          <h2 class="recharge-card__title">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M10 2.5C10 2.5 4.5 9.3 4.5 12.8C4.5 15.8 6.9 18 10 18C13.1 18 15.5 15.8 15.5 12.8C15.5 9.3 10 2.5 10 2.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            Body check-ins
+          </h2>
+          <div class="wellness-row">
+            <div class="wellness-block">
+              <div class="wellness-block__head">
+                <svg viewBox="0 0 20 20" fill="none"><path d="M10 2.5C10 2.5 4.5 9.3 4.5 12.8C4.5 15.8 6.9 18 10 18C13.1 18 15.5 15.8 15.5 12.8C15.5 9.3 10 2.5 10 2.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                <span>Water</span>
+                <span class="wellness-block__count"><span data-water-count>0</span>/8</span>
+              </div>
+              <div class="water-glasses" data-water-glasses></div>
+            </div>
+            <div class="wellness-block">
+              <div class="wellness-block__head">
+                <svg viewBox="0 0 20 20" fill="none"><path d="M10 4V2M14.5 5.5L16 4M5.5 5.5L4 4M10 4C6.7 4 4 6.7 4 10C4 13.3 6.7 16 10 16C13.3 16 16 13.3 16 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <span>Stretch reminder</span>
+              </div>
+              <p class="wellness-block__sub" data-stretch-status>Next nudge in 45:00</p>
+              <p class="wellness-block__sub" style="margin-top:6px;"><span id="doneTodayRecharge">0</span> tasks completed today</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="recharge-card">
+          <h2 class="recharge-card__title">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M10 18C10 18 3 12.5 3 7.8C3 5.1 5.1 3 7.8 3C9 3 10 3.6 10 3.6C10 3.6 11 3 12.2 3C14.9 3 17 5.1 17 7.8C17 12.5 10 18 10 18Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            Breathing exercise
+          </h2>
+          <div class="breathe-wrap">
+            <div class="breathe-orb-zone" id="breatheOrbZone">
+              <div class="breathe-ring"></div>
+              <div class="breathe-orb"></div>
+            </div>
+            <div style="text-align:center;">
+              <p class="breathe-label" id="breatheLabel">Ready when you are</p>
+              <p class="breathe-sub">Box breathing — 4 seconds each phase</p>
+            </div>
+            <div class="breathe-controls">
+              <button class="btn btn--primary" id="breatheStart">Start breathing</button>
+            </div>
+            <p class="breathe-count" id="breatheCount"></p>
+          </div>
+        </div>
+
+        <div class="recharge-card">
+          <h2 class="recharge-card__title">
+            <svg viewBox="0 0 20 20" fill="none"><circle cx="6" cy="7" r="3" stroke="currentColor" stroke-width="1.6"/><circle cx="14" cy="7" r="3" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="14" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
+            Pop the bubbles
+          </h2>
+          <div class="bubbles-grid" id="bubblesGrid"></div>
+          <div class="bubbles-footer">
+            <span id="bubblesStatus">All 24 bubbles ready</span>
+            <button class="btn btn--ghost" id="bubblesRefill" style="padding:6px 14px; font-size:0.78rem;">Refill</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- PROGRESS VIEW ---------- -->
+    <section class="view" id="view-progress">
+      <header class="view-head">
+        <div>
+          <p class="view-head__eyebrow">Progress</p>
+          <h1 class="view-head__title">Everything you've built so far</h1>
+        </div>
+      </header>
+
+      <div class="progress-grid">
+        <div class="progress-card progress-card--rings">
+          <div class="sync-rings-wrap" id="progressRingsWrap" style="width:180px;height:180px;">
+            <svg id="progressRings" viewBox="0 0 128 128" width="180" height="180"></svg>
+            <div class="rings__center">
+              <span class="rings__center-num" id="progressStreakCount" style="font-size:2.4rem;">0</span>
+              <span class="rings__center-label" style="font-size:0.68rem;">day streak</span>
+            </div>
+          </div>
+          <p style="font-size:0.8rem; color:var(--text-tertiary); text-align:center;">Each ring is a 7-day tier. Miss a day and it resets to one.</p>
+        </div>
+
+        <div class="progress-card">
+          <p class="progress-card__title">Level</p>
+          <div class="level-bar" id="levelBar" style="border:none; padding:0; background:transparent;">
+            <div class="level-bar__head">
+              <div class="level-bar__level">
+                <span class="level-bar__level-badge" id="levelBadge">1</span>
+                <span>Level <span id="levelNum">1</span></span>
+              </div>
+              <span class="level-bar__xp"><span id="levelXpInto">0</span>/<span id="levelXpNeeded">150</span> XP</span>
+            </div>
+            <div class="level-bar__track"><div class="level-bar__fill" id="levelFill" style="width:0%;"></div></div>
+          </div>
+          <p style="font-size:0.8rem; color:var(--text-tertiary); margin-top:16px;">Tasks and focus sessions both feed this. High-priority tasks and 50-minute sessions push it fastest.</p>
+        </div>
+      </div>
+
+      <div class="progress-card" style="margin-bottom:18px;">
+        <p class="progress-card__title">Achievements</p>
+        <div class="badges-grid" id="badgesGrid"></div>
+      </div>
+
+      <div class="mobile-only-widgets" id="mobileWidgets"></div>
+    </section>
+
+    <!-- ---------- THEMES VIEW ---------- -->
+    <section class="view" id="view-themes">
+      <header class="view-head">
+        <div style="position:relative;">
+          <svg class="sparkle sparkle--2" viewBox="0 0 20 20" fill="currentColor" width="14" height="14" style="left:-20px; top:0px;"><path d="M10 0L11.8 8.2L20 10L11.8 11.8L10 20L8.2 11.8L0 10L8.2 8.2L10 0Z"/></svg>
+          <p class="view-head__eyebrow">Themes</p>
+          <h1 class="view-head__title">Pick your aesthetic</h1>
+        </div>
+      </header>
+
+      <div class="themes-grid" id="themesGrid"></div>
+    </section>
+
+  </main>
+
+  <!-- ===== RIGHT RAIL ===== -->
+  <aside class="rail rail--right">
+    <div class="quote-card" id="quoteCardDesktop">
+      <svg class="quote-card__mark" viewBox="0 0 32 24" fill="none"><path d="M0 24V14.4C0 6.4 4.8 1.2 12.8 0L14.4 3.2C9.6 4.4 7.2 7.2 7.2 11.2H12.8V24H0ZM17.6 24V14.4C17.6 6.4 22.4 1.2 30.4 0L32 3.2C27.2 4.4 24.8 7.2 24.8 11.2H30.4V24H17.6Z" fill="currentColor"/></svg>
+      <p class="quote-card__text" data-quote-text>Loading…</p>
+      <button class="quote-card__refresh" data-quote-refresh aria-label="New quote">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M13.7 4.6A6 6 0 1 0 14 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 2V5H11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <div class="wellness-card" id="wellnessCardDesktop">
+      <h3 class="wellness-card__title">Quick check-in</h3>
+      <div class="wellness-item">
+        <div class="wellness-item__head">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M10 2.5C10 2.5 4.5 9.3 4.5 12.8C4.5 15.8 6.9 18 10 18C13.1 18 15.5 15.8 15.5 12.8C15.5 9.3 10 2.5 10 2.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <span>Water</span>
+          <span class="wellness-item__count"><span data-water-count>0</span>/8</span>
+        </div>
+        <div class="water-glasses" data-water-glasses></div>
+      </div>
+      <div class="wellness-item">
+        <div class="wellness-item__head">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M10 4V2M14.5 5.5L16 4M5.5 5.5L4 4M10 4C6.7 4 4 6.7 4 10C4 13.3 6.7 16 10 16C13.3 16 16 13.3 16 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span>Stretch reminder</span>
+        </div>
+        <p class="wellness-item__sub" data-stretch-status>Next nudge in 45:00</p>
+      </div>
+      <div class="wellness-item">
+        <div class="wellness-item__head">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M10 18C10 18 3 12.5 3 7.8C3 5.1 5.1 3 7.8 3C9 3 10 3.6 10 3.6C10 3.6 11 3 12.2 3C14.9 3 17 5.1 17 7.8C17 12.5 10 18 10 18Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <span>Today's wins</span>
+        </div>
+        <p class="wellness-item__sub"><span id="doneToday">0</span> tasks completed today</p>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- Mobile bottom tab bar -->
+<nav class="bottom-nav" id="bottomNav" aria-label="Main">
+  <button class="bottom-nav__item is-active" data-view="tasks">
+    <svg viewBox="0 0 20 20" fill="none"><path d="M4 10L8 14L16 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>Tasks</span>
+  </button>
+  <button class="bottom-nav__item" data-view="pomodoro">
+    <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.2" stroke="currentColor" stroke-width="1.8"/><path d="M10 6V10L12.5 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <span>Timer</span>
+  </button>
+  <button class="bottom-nav__item" data-view="recharge">
+    <svg viewBox="0 0 20 20" fill="none"><path d="M10 18C10 18 3 12.5 3 7.8C3 5.1 5.1 3 7.8 3C9 3 10 3.6 10 3.6C10 3.6 11 3 12.2 3C14.9 3 17 5.1 17 7.8C17 12.5 10 18 10 18Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    <span>Recharge</span>
+  </button>
+  <button class="bottom-nav__item" data-view="progress">
+    <svg viewBox="0 0 20 20" fill="none"><path d="M8 1L9.8 5.6L14.7 6L11 9.2L12.1 14L8 11.4L3.9 14L5 9.2L1.3 6L6.2 5.6L8 1Z" fill="currentColor"/></svg>
+    <span>Progress</span>
+  </button>
+  <button class="bottom-nav__item" data-view="themes">
+    <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.6"/><path d="M10 2.5C10 2.5 13.5 6 13.5 9.5C13.5 11.7 11.9 13.5 10 13.5C8.6 13.5 7.5 12.4 7.5 11C7.5 9.9 8.3 9 9.3 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <span>Themes</span>
+  </button>
+</nav>
+
+<!-- Full-page states -->
+<div class="full-page-state" id="loadingState">
+  <svg viewBox="0 0 20 20" fill="none" style="animation:spin 1s linear infinite;"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="2" stroke-dasharray="30" stroke-dashoffset="10"/></svg>
+  <p>Loading StudySync…</p>
+</div>
+<style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+
+<div class="full-page-state" id="offlineState" style="display:none;">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M3 3L21 21M8.5 8.5C6.5 9.3 5 11 5 13M12 5C14.5 5 16.8 6 18.5 7.7M15.5 11.5C16.5 12.3 17 13.4 17 14.6M12 17.5H12.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <h1>Can't reach the StudySync server</h1>
+  <p>The app needs the backend running to load your tasks and streak. In the project folder, run <code>npm start</code>, then reload this page.</p>
+  <button class="btn btn--primary" onclick="window.location.reload()">Try again</button>
+</div>
+
+<!-- Toast for nudges -->
+<div class="toast" id="toast">
+  <span id="toastText"></span>
+  <button id="toastClose" class="toast-close" aria-label="Dismiss">×</button>
+</div>
+
+<script src="rings.js"></script>
+<script src="api.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
