@@ -10,9 +10,6 @@
 :root {
   --font-body: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-  /* --font-display is set per-theme below — Fredoka (cute/rounded) is
-     the default; Cyberpunk and Dark Academia get their own identity */
-  --font-accent: 'Caveat', cursive; /* used sparingly — softcore quote flourishes */
 
   --r-sm: 9px;
   --r-md: 16px;
@@ -24,7 +21,7 @@
 
 /* ---------- CLASSIC LIGHT — dusty teal, mint, peach, sage ---------- */
 [data-theme="classic-light"] {
-  --font-display: 'Fredoka', sans-serif;
+  --font-display: 'Inter', sans-serif;
   --bg: #FAF6EE;
   --surface: #FFFFFF;
   --surface-hover: #FDF6EC;
@@ -47,7 +44,7 @@
 
 /* ---------- CLASSIC DARK — navy, mauve, dusty blue ---------- */
 [data-theme="classic-dark"] {
-  --font-display: 'Fredoka', sans-serif;
+  --font-display: 'Inter', sans-serif;
   --bg: #10132A;
   --surface: #191D40;
   --surface-hover: #212650;
@@ -70,7 +67,7 @@
 
 /* ---------- CYBERPUNK — neon violet, magenta, cyan on near-black ---------- */
 [data-theme="cyberpunk"] {
-  --font-display: 'Space Grotesk', sans-serif;
+  --font-display: 'Courier New', monospace;
   --bg: #0A0616;
   --surface: #150E28;
   --surface-hover: #1E1538;
@@ -93,7 +90,7 @@
 
 /* ---------- DARK ACADEMIA — mahogany, aged gold, burgundy ---------- */
 [data-theme="dark-academia"] {
-  --font-display: 'Playfair Display', serif;
+  --font-display: 'Snell Roundhand', 'Mrs Saint Delafield', cursive;
   --bg: #1C1410;
   --surface: #2A2019;
   --surface-hover: #362A21;
@@ -116,7 +113,7 @@
 
 /* ---------- SOFTCORE — sunset amber, warm candlelight ---------- */
 [data-theme="softcore"] {
-  --font-display: 'Fredoka', sans-serif;
+  --font-display: 'JetBrains Mono', monospace;
   --bg: #211815;
   --surface: #2E2420;
   --surface-hover: #3A2E28;
@@ -375,7 +372,7 @@ img, svg { display: block; max-width: 100%; }
 .canvas { padding: 36px 48px 100px; min-width: 0; }
 
 .brand { display: flex; align-items: center; gap: 9px; padding-left: 4px; }
-.brand__mark { width: 26px; height: 26px; }
+.brand__mark { height: 26px; width: auto; }
 .brand__name { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; }
 
 .streak-summary {
@@ -576,16 +573,16 @@ img, svg { display: block; max-width: 100%; }
 .bubbles-footer span { font-size: 0.78rem; color: var(--text-tertiary); }
 
 /* ---------- mood (moved into Recharge) ---------- */
-.mood-picker { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 16px; }
+.mood-picker { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 16px; }
 .mood-opt {
-  display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 6px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 4px 10px;
   background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--r-md);
-  color: var(--text-secondary); font-size: 0.72rem; font-weight: 500; transition: all 0.15s var(--ease-bounce);
+  color: var(--text-secondary); font-size: 0.68rem; font-weight: 500; transition: all 0.15s var(--ease-bounce);
 }
 .mood-opt:hover { transform: translateY(-2px) scale(1.03); border-color: var(--text-tertiary); }
-.mood-opt__face { font-family: var(--font-mono); font-size: 1rem; color: var(--text-primary); }
+.mood-opt__icon { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
 .mood-opt.is-selected { border-color: var(--primary); background: var(--surface-hover); transform: scale(1.05); }
-.mood-opt.is-selected .mood-opt__face { color: var(--primary); }
+.mood-opt.is-selected .mood-opt__icon { box-shadow: 0 0 0 2px var(--primary); }
 
 .mood-note { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-md); padding: 12px 14px; color: var(--text-primary); font-size: 0.86rem; resize: vertical; margin-bottom: 10px; }
 .mood-note::placeholder { color: var(--text-tertiary); }
@@ -808,7 +805,7 @@ img, svg { display: block; max-width: 100%; }
   .bottom-nav { display: flex; }
   .canvas { padding: 20px 16px 90px; }
   .view-head__title { font-size: 1.5rem; }
-  .mood-picker { grid-template-columns: repeat(3, 1fr); }
+  .mood-picker { grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .pomo__ring-wrap { width: 200px; height: 200px; }
   .pomo__time { font-size: 2.4rem; }
   .progress-grid { grid-template-columns: 1fr; }
@@ -844,19 +841,27 @@ img, svg { display: block; max-width: 100%; }
 
 .themes-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
 .theme-card {
-  background: var(--surface); border: 2px solid var(--border); border-radius: var(--r-lg);
+  position: relative; overflow: hidden; min-height: 190px;
+  background-size: cover; background-position: center;
+  border: 2px solid var(--border); border-radius: var(--r-lg);
   padding: 18px; cursor: pointer; transition: all 0.2s var(--ease-bounce); text-align: left;
+  display: flex; flex-direction: column; justify-content: flex-end;
 }
-.theme-card:hover { transform: translateY(-3px); }
+.theme-card::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(10,8,20,0.1) 0%, rgba(10,8,20,0.55) 55%, rgba(10,8,20,0.92) 100%);
+}
+.theme-card > * { position: relative; z-index: 1; }
+.theme-card:hover { transform: translateY(-4px); }
 .theme-card.is-active { border-color: var(--primary); box-shadow: var(--glow-primary); }
-.theme-card__swatches { display: flex; gap: 6px; margin-bottom: 14px; }
-.theme-card__swatch { width: 30px; height: 30px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.15); }
-.theme-card__name { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+.theme-card__swatches { display: flex; gap: 6px; margin-bottom: 12px; }
+.theme-card__swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+.theme-card__name { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; color: #FBF9F5; }
 .theme-card__badge {
   font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
   background: var(--primary); color: var(--on-accent); padding: 2px 8px; border-radius: 20px;
 }
-.theme-card__desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; }
+.theme-card__desc { font-size: 0.82rem; color: #E4DFE8; line-height: 1.5; }
 
 /* ============================================
    DECORATIVE SPARKLES — cutesy ambient accents

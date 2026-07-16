@@ -23,11 +23,11 @@
      ============================================ */
 
   const THEMES = [
-    { id: "classic-light", name: "Classic Light", desc: "Soft daylight, dusty teal and peach. Clean and calm for daytime sessions.", swatches: ["#4E9DAE", "#DB7E63", "#7C8A72"] },
-    { id: "classic-dark", name: "Classic Dark", desc: "Slate blue and mauve on deep navy. The original StudySync, after hours.", swatches: ["#C38EB4", "#86A8CF", "#E1CBD7"] },
-    { id: "cyberpunk", name: "Cyberpunk", desc: "Neon violet and cyan on near-black. For late-night deep-focus sessions.", swatches: ["#B355FF", "#4DEEFF", "#FF3EC8"] },
-    { id: "dark-academia", name: "Dark Academia", desc: "Aged gold and burgundy on warm mahogany. Library-coded productivity.", swatches: ["#C9A24B", "#A24B3F", "#7C8F68"] },
-    { id: "softcore", name: "Softcore", desc: "Sunset amber and warm candlelight. Cozy, soft, unhurried.", swatches: ["#E8A960", "#E88C7D", "#F0D590"] },
+    { id: "classic-light", name: "Classic Light", desc: "Soft daylight, dusty teal and peach. Clean and calm for daytime sessions.", swatches: ["#4E9DAE", "#DB7E63", "#7C8A72"], image: "images/theme-classic-light.jpg" },
+    { id: "classic-dark", name: "Classic Dark", desc: "Slate blue and mauve on deep navy. The original StudySync, after hours.", swatches: ["#C38EB4", "#86A8CF", "#E1CBD7"], image: "images/theme-classic-dark.jpg" },
+    { id: "cyberpunk", name: "Cyberpunk", desc: "Neon violet and cyan on near-black. For late-night deep-focus sessions.", swatches: ["#B355FF", "#4DEEFF", "#FF3EC8"], image: "images/theme-cyberpunk.jpg" },
+    { id: "dark-academia", name: "Dark Academia", desc: "Aged gold and burgundy on warm mahogany. Library-coded productivity.", swatches: ["#C9A24B", "#A24B3F", "#7C8F68"], image: "images/theme-dark-academia.jpg" },
+    { id: "softcore", name: "Softcore", desc: "Sunset amber and warm candlelight. Cozy, soft, unhurried.", swatches: ["#E8A960", "#E88C7D", "#F0D590"], image: "images/theme-softcore.jpg" },
   ];
 
   function applyTheme(themeId) {
@@ -45,6 +45,7 @@
     THEMES.forEach((t) => {
       const card = document.createElement("button");
       card.className = "theme-card" + (t.id === current ? " is-active" : "");
+      card.style.backgroundImage = `url('${t.image}')`;
       card.innerHTML = `
         <div class="theme-card__swatches">
           ${t.swatches.map((c) => `<span class="theme-card__swatch" style="background:${c}"></span>`).join("")}

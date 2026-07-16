@@ -39,13 +39,17 @@ around locally, but not for anything real.
 Switchable anytime from the **Themes** tab inside the app (picked stays in
 `localStorage`, so it's per-device, not per-account):
 
-| Theme | Vibe |
-|---|---|
-| Classic Light | Dusty teal, mint, peach, sage — daylight-calm |
-| Classic Dark | Navy, mauve, dusty blue — the original after hours |
-| Cyberpunk | Neon violet/cyan on near-black — late-night deep focus |
-| Dark Academia | Aged gold, burgundy, mahogany — library-coded |
-| Softcore | Sunset amber, warm candlelight — cozy and unhurried |
+| Theme | Vibe | Display font |
+|---|---|---|
+| Classic Light | Dusty teal, mint, peach, sage — daylight-calm | Inter (sans-serif) |
+| Classic Dark | Navy, mauve, dusty blue — the original after hours | Inter (sans-serif) |
+| Cyberpunk | Neon violet/cyan on near-black — late-night deep focus | Courier New (monospace) |
+| Dark Academia | Aged gold, burgundy, mahogany — library-coded | Snell Roundhand — a Mac/iOS system font; falls back to Mrs Saint Delafield (Google Fonts) on Windows/Linux/Android, so it still looks like an elegant script everywhere, just not the identical face |
+| Softcore | Sunset amber, warm candlelight — cozy and unhurried | JetBrains Mono (monospace) |
+
+Each theme's Themes-gallery card also shows its own reference photo as
+the card background (see `images/theme-*.jpg` and the `THEMES` array in
+`app.js` — that's where the image path, name, and description live).
 
 Colors are CSS custom properties keyed off `data-theme` on `<body>` — see
 the top of `public/style.css`. Adding a 6th theme means adding one more
@@ -75,7 +79,12 @@ studysync/
     ├── rings.js                 renders the Sync Rings streak visual, theme-aware
     ├── api.js                    fetch wrapper for every backend call
     ├── app.js, auth.js            page logic (breathing game + bubble pop live in app.js)
-    └── favicon.svg, favicon.ico, apple-touch-icon.png, site.webmanifest
+    ├── favicon.ico, favicon-32.png, apple-touch-icon.png, icon-192.png, icon-512.png, site.webmanifest
+    └── images/
+        ├── logo.png, logo-small.png       the StudySync mark (used in nav + favicons)
+        ├── theme-*.jpg (×5)                one reference photo per theme, shown as
+        │                                     the background on its Themes gallery card
+        └── moods/*.jpg (×6)                 happy / sad / okay / satire / lovely / melancholic
 ```
 
 ## Why a JSON file instead of a real database?

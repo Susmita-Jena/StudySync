@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StudySync — dashboard</title>
 
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png">
 <link rel="alternate icon" href="/favicon.ico">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
@@ -13,7 +13,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Caveat:wght@500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Mrs+Saint+Delafield&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body data-theme="classic-dark">
@@ -23,7 +23,7 @@
   <!-- ===== LEFT RAIL ===== -->
   <aside class="rail rail--left">
     <div class="brand">
-      <svg class="brand__mark" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="19" fill="none" stroke="url(#railGrad)" stroke-width="7" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="22" transform="rotate(-90 32 32)"/><circle cx="32" cy="32" r="6" fill="currentColor"/><defs><linearGradient id="railGrad" x1="6" y1="6" x2="58" y2="58"><stop stop-color="#C38EB4"/><stop offset="1" stop-color="#86A8CF"/></linearGradient></defs></svg>
+      <img class="brand__mark" src="images/logo-small.png" alt="StudySync logo">
       <span class="brand__name">StudySync</span>
     </div>
 
@@ -165,20 +165,23 @@
             How's today going?
           </h2>
           <div class="mood-picker" id="moodPicker">
-            <button class="mood-opt" data-mood="great" data-color="ok">
-              <span class="mood-opt__face">◠◡◠</span><span>Great</span>
+            <button class="mood-opt" data-mood="happy" data-color="ok">
+              <img class="mood-opt__icon" src="images/moods/happy.jpg" alt=""><span>Happy</span>
             </button>
-            <button class="mood-opt" data-mood="good" data-color="primary">
-              <span class="mood-opt__face">⌣ ‿ ⌣</span><span>Good</span>
+            <button class="mood-opt" data-mood="sad" data-color="info">
+              <img class="mood-opt__icon" src="images/moods/sad.jpg" alt=""><span>Sad</span>
             </button>
-            <button class="mood-opt" data-mood="meh" data-color="info">
-              <span class="mood-opt__face">– ‿ –</span><span>Meh</span>
+            <button class="mood-opt" data-mood="okay" data-color="slate">
+              <img class="mood-opt__icon" src="images/moods/okay.jpg" alt=""><span>Okay</span>
             </button>
-            <button class="mood-opt" data-mood="stressed" data-color="warn">
-              <span class="mood-opt__face">⌢ ‿ ⌢</span><span>Stressed</span>
+            <button class="mood-opt" data-mood="satire" data-color="warn">
+              <img class="mood-opt__icon" src="images/moods/satire.jpg" alt=""><span>Satire</span>
             </button>
-            <button class="mood-opt" data-mood="low" data-color="slate">
-              <span class="mood-opt__face">⌢ – ⌢</span><span>Low</span>
+            <button class="mood-opt" data-mood="lovely" data-color="primary">
+              <img class="mood-opt__icon" src="images/moods/lovely.jpg" alt=""><span>Lovely</span>
+            </button>
+            <button class="mood-opt" data-mood="melancholic" data-color="info">
+              <img class="mood-opt__icon" src="images/moods/melancholic.jpg" alt=""><span>Melancholic</span>
             </button>
           </div>
           <textarea id="moodNote" class="mood-note" placeholder="Optional note…" rows="2"></textarea>

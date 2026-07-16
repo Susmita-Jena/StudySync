@@ -4,7 +4,7 @@ import { db } from "../db.js";
 import { todayKey } from "../lib/gamify.js";
 
 const router = Router();
-const VALID_MOODS = ["great", "good", "meh", "stressed", "low"];
+const VALID_MOODS = ["happy", "sad", "okay", "satire", "lovely", "melancholic"];
 
 router.get("/", (req, res) => {
   const moods = db.data.moods
