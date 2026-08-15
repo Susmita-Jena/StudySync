@@ -13,7 +13,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Mrs+Saint+Delafield&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body data-theme="classic-dark">
@@ -237,13 +237,13 @@
 
         <div class="recharge-card">
           <h2 class="recharge-card__title">
-            <svg viewBox="0 0 20 20" fill="none"><circle cx="6" cy="7" r="3" stroke="currentColor" stroke-width="1.6"/><circle cx="14" cy="7" r="3" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="14" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
-            Pop the bubbles
+            <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/></svg>
+            Memory match
           </h2>
-          <div class="bubbles-grid" id="bubblesGrid"></div>
-          <div class="bubbles-footer">
-            <span id="bubblesStatus">All 24 bubbles ready</span>
-            <button class="btn btn--ghost" id="bubblesRefill" style="padding:6px 14px; font-size:0.78rem;">Refill</button>
+          <div class="memory-grid" id="memoryGrid"></div>
+          <div class="memory-footer">
+            <span id="memoryStatus">0 of 6 pairs found · 0 moves</span>
+            <button class="btn btn--ghost" id="memoryRefill" style="padding:6px 14px; font-size:0.78rem;">Reshuffle</button>
           </div>
         </div>
       </div>
@@ -303,6 +303,8 @@
           <h1 class="view-head__title">Pick your aesthetic</h1>
         </div>
       </header>
+
+      <div class="theme-hero" id="themeHero"></div>
 
       <div class="themes-grid" id="themesGrid"></div>
     </section>

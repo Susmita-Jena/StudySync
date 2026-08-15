@@ -23,11 +23,11 @@
      ============================================ */
 
   const THEMES = [
-    { id: "classic-light", name: "Classic Light", desc: "Soft daylight, dusty teal and peach. Clean and calm for daytime sessions.", swatches: ["#4E9DAE", "#DB7E63", "#7C8A72"], image: "images/theme-classic-light.jpg" },
-    { id: "classic-dark", name: "Classic Dark", desc: "Slate blue and mauve on deep navy. The original StudySync, after hours.", swatches: ["#C38EB4", "#86A8CF", "#E1CBD7"], image: "images/theme-classic-dark.jpg" },
-    { id: "cyberpunk", name: "Cyberpunk", desc: "Neon violet and cyan on near-black. For late-night deep-focus sessions.", swatches: ["#B355FF", "#4DEEFF", "#FF3EC8"], image: "images/theme-cyberpunk.jpg" },
-    { id: "dark-academia", name: "Dark Academia", desc: "Aged gold and burgundy on warm mahogany. Library-coded productivity.", swatches: ["#C9A24B", "#A24B3F", "#7C8F68"], image: "images/theme-dark-academia.jpg" },
-    { id: "softcore", name: "Softcore", desc: "Sunset amber and warm candlelight. Cozy, soft, unhurried.", swatches: ["#E8A960", "#E88C7D", "#F0D590"], image: "images/theme-softcore.jpg" },
+    { id: "classic-light", name: "Classic Light", desc: "Soft daylight, dusty teal and peach. Clean and calm for daytime sessions.", swatches: ["#2F8577", "#D97748", "#4FA88C"], image: "images/theme-classic-light.jpg" },
+    { id: "classic-dark", name: "Classic Dark", desc: "Slate blue and mauve on deep navy. The original StudySync, after hours.", swatches: ["#A873D1", "#6C8EE8", "#4FBBA8"], image: "images/theme-classic-dark.jpg" },
+    { id: "cyberpunk", name: "Cyberpunk", desc: "Neon violet and cyan on near-black. For late-night deep-focus sessions.", swatches: ["#C24CFF", "#3EE0FF", "#4CFFB0"], image: "images/theme-cyberpunk.jpg" },
+    { id: "dark-academia", name: "Dark Academia", desc: "Aged gold and burgundy on warm mahogany. Library-coded productivity.", swatches: ["#CB9A42", "#7A3B40", "#7C8F60"], image: "images/theme-dark-academia.jpg" },
+    { id: "softcore", name: "Softcore", desc: "Sunset amber and warm candlelight. Cozy, soft, unhurried.", swatches: ["#E7A15D", "#E28472", "#EFC77E"], image: "images/theme-softcore.jpg" },
   ];
 
   function applyTheme(themeId) {
@@ -37,7 +37,21 @@
     renderThemesGrid();
   }
 
+  function renderThemeHero() {
+    const hero = $("#themeHero");
+    if (!hero) return;
+    const current = document.body.dataset.theme;
+    const theme = THEMES.find((t) => t.id === current) || THEMES[0];
+    hero.style.backgroundImage = `url('${theme.image}')`;
+    hero.innerHTML = `
+      <p class="theme-hero__eyebrow">Currently active</p>
+      <h2 class="theme-hero__name">${theme.name}</h2>
+      <p class="theme-hero__desc">${theme.desc}</p>
+    `;
+  }
+
   function renderThemesGrid() {
+    renderThemeHero();
     const grid = $("#themesGrid");
     if (!grid) return;
     const current = document.body.dataset.theme;
@@ -71,7 +85,7 @@
     waterToday: 0,
     pomo: { mins: 25, secondsLeft: 25 * 60, running: false, sessionsToday: 0, intervalId: null },
     breathing: { running: false, phase: null, cycles: 0, timeoutId: null },
-    bubbles: { popped: new Set(), total: 24 },
+    memory: { cards: [], flipped: [], matched: new Set(), moves: 0, locked: false },
   };
 
   const QUOTES = [
@@ -147,9 +161,9 @@
     breatheLabel: $("#breatheLabel"),
     breatheStart: $("#breatheStart"),
     breatheCount: $("#breatheCount"),
-    bubblesGrid: $("#bubblesGrid"),
-    bubblesStatus: $("#bubblesStatus"),
-    bubblesRefill: $("#bubblesRefill"),
+    memoryGrid: $("#memoryGrid"),
+    memoryStatus: $("#memoryStatus"),
+    memoryRefill: $("#memoryRefill"),
   };
 
   /* ============================================
@@ -178,7 +192,7 @@
       el.appRoot.style.display = "grid";
       cloneMobileWidgets();
       renderAll();
-      initBubbles();
+      initMemory();
       startBackgroundTimers();
     } catch (err) {
       el.loadingState.style.display = "none";
@@ -673,38 +687,87 @@
   });
 
   /* ============================================
-     BUBBLE POP GAME
+     MEMORY MATCH GAME — uses the 6 mood icons as pairs
      ============================================ */
 
-  function initBubbles() {
-    el.bubblesGrid.innerHTML = "";
-    state.bubbles.popped = new Set();
-    for (let i = 0; i < state.bubbles.total; i++) {
-      const b = document.createElement("button");
-      b.className = "bubble";
-      b.dataset.idx = i;
-      b.setAttribute("aria-label", "Pop bubble");
-      b.addEventListener("click", () => popBubble(i, b));
-      el.bubblesGrid.appendChild(b);
+  const MEMORY_MOODS = ["happy", "sad", "okay", "satire", "lovely", "melancholic"];
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
     }
-    updateBubblesStatus();
+    return a;
   }
 
-  function popBubble(i, btn) {
-    if (state.bubbles.popped.has(i)) return;
-    state.bubbles.popped.add(i);
-    btn.classList.add("is-popped");
-    updateBubblesStatus();
+  function initMemory() {
+    state.memory = {
+      cards: shuffle([...MEMORY_MOODS, ...MEMORY_MOODS]),
+      flipped: [], matched: new Set(), moves: 0, locked: false,
+    };
+    renderMemory();
   }
 
-  function updateBubblesStatus() {
-    const remaining = state.bubbles.total - state.bubbles.popped.size;
-    el.bubblesStatus.textContent = remaining === 0
-      ? "All popped — nice. Hit refill for another round."
-      : `${remaining} of ${state.bubbles.total} left`;
+  function renderMemory() {
+    const m = state.memory;
+    el.memoryGrid.innerHTML = "";
+    m.cards.forEach((mood, idx) => {
+      const isUp = m.flipped.includes(idx) || m.matched.has(idx);
+      const card = document.createElement("button");
+      card.className = "memory-card" + (isUp ? " is-flipped" : "") + (m.matched.has(idx) ? " is-matched" : "");
+      card.setAttribute("aria-label", isUp ? mood : "Flip card");
+      card.innerHTML = `
+        <div class="memory-card__inner">
+          <div class="memory-card__back"></div>
+          <div class="memory-card__front"><img src="images/moods/${mood}.jpg" alt="${mood}"></div>
+        </div>
+      `;
+      card.addEventListener("click", () => flipMemoryCard(idx));
+      el.memoryGrid.appendChild(card);
+    });
+    updateMemoryStatus();
   }
 
-  el.bubblesRefill.addEventListener("click", initBubbles);
+  function flipMemoryCard(idx) {
+    const m = state.memory;
+    if (m.locked || m.matched.has(idx) || m.flipped.includes(idx) || m.flipped.length >= 2) return;
+
+    m.flipped.push(idx);
+    renderMemory();
+
+    if (m.flipped.length === 2) {
+      m.moves += 1;
+      const [i1, i2] = m.flipped;
+      if (m.cards[i1] === m.cards[i2]) {
+        m.matched.add(i1);
+        m.matched.add(i2);
+        m.flipped = [];
+        renderMemory();
+        if (m.matched.size === m.cards.length) {
+          showToast(`🧠 All 6 pairs found in ${m.moves} moves — nice memory.`);
+        }
+      } else {
+        m.locked = true;
+        setTimeout(() => {
+          m.flipped = [];
+          m.locked = false;
+          renderMemory();
+        }, 800);
+      }
+    }
+  }
+
+  function updateMemoryStatus() {
+    const m = state.memory;
+    const pairsFound = m.matched.size / 2;
+    const total = m.cards.length / 2;
+    el.memoryStatus.textContent = pairsFound === total
+      ? `All ${total} pairs found · ${m.moves} moves`
+      : `${pairsFound} of ${total} pairs found · ${m.moves} moves`;
+  }
+
+  el.memoryRefill.addEventListener("click", initMemory);
 
   /* ============================================
      QUOTES
