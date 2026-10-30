@@ -43,7 +43,7 @@
     if (!hero) return;
     const current = document.body.dataset.theme;
     const theme = THEMES.find((t) => t.id === current) || THEMES[0];
-    hero.style.backgroundImage = `url('${theme.image}')`;
+    hero.style.backgroundImage = theme.image ? `url('${theme.image}')` : "none";
     hero.innerHTML = `
       <p class="theme-hero__eyebrow">Currently active</p>
       <h2 class="theme-hero__name">${theme.name}</h2>
@@ -60,7 +60,7 @@
     THEMES.forEach((t) => {
       const card = document.createElement("button");
       card.className = "theme-card" + (t.id === current ? " is-active" : "");
-      card.style.backgroundImage = `url('${t.image}')`;
+      card.style.backgroundImage = t.image ? `url('${t.image}')` : "none";
       card.innerHTML = `
         <div class="theme-card__swatches">
           ${t.swatches.map((c) => `<span class="theme-card__swatch" style="background:${c}"></span>`).join("")}
@@ -172,7 +172,7 @@
      ============================================ */
 
   async function bootstrap() {
-    applyTheme(localStorage.getItem("studysync_theme") || "classic-dark");
+    applyTheme(localStorage.getItem("studysync_theme") || "storybook");
 
     try {
       const [stateRes, tasksRes, moodsRes, achRes] = await Promise.all([
