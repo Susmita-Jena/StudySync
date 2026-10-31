@@ -8,6 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static(path.join(__dirname, "public"), { index: "index.html" }));
+app.use("/api", (req, res) => res.status(404).json({ error: "Not found." }));
 app.get(/^(?!\/api).*/, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
