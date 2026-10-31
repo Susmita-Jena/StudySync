@@ -8,7 +8,7 @@
    ============================================ */
 
 :root {
-  --font-body: 'Inter', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
   --r-sm: 9px;
@@ -21,7 +21,7 @@
 
 /* ---------- CLASSIC LIGHT — emerald teal, terracotta, seafoam ---------- */
 [data-theme="classic-light"] {
-  --font-display: 'Inter', sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
   --bg: #F8F5EE;
   --surface: #FFFFFF;
   --surface-hover: #FBF7EE;
@@ -974,8 +974,8 @@ img, svg { display: block; max-width: 100%; }
    ========================================================== */
 
 [data-theme="storybook"] {
-  --font-body: 'Nunito Sans', sans-serif;
-  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
   --bg: #F8F2E8;
   --surface: #FFFDF8;
@@ -1268,12 +1268,15 @@ body[data-theme="storybook"] .theme-hero__name { color: #493B36; font-family: va
 body[data-theme="storybook"] .theme-hero__desc,
 body[data-theme="storybook"] .theme-hero__eyebrow { color: #806D63; }
 body[data-theme="storybook"] .theme-card {
-  background: #FFFDF8 !important;
+  background-color: #FFFDF8;
   border: 1px solid #E8D8CA;
   box-shadow: 0 10px 24px -18px rgba(91, 63, 51, .35);
 }
-body[data-theme="storybook"] .theme-card__name { color: #59463F; }
-body[data-theme="storybook"] .theme-card__desc { color: #806D63; }
+body[data-theme="storybook"] .theme-card::before {
+  background: linear-gradient(180deg, rgba(28, 20, 22, .04) 0%, rgba(28, 20, 22, .18) 38%, rgba(28, 20, 22, .82) 100%);
+}
+body[data-theme="storybook"] .theme-card__name { color: #FFFDF8; text-shadow: 0 1px 8px rgba(0,0,0,.24); }
+body[data-theme="storybook"] .theme-card__desc { color: rgba(255,253,248,.92); text-shadow: 0 1px 8px rgba(0,0,0,.24); }
 body[data-theme="storybook"] .theme-card.is-active {
   border-color: #C87978;
   box-shadow: 0 0 0 2px rgba(200, 121, 120, .16), 0 12px 24px -18px rgba(91, 63, 51, .4);
@@ -1285,3 +1288,9 @@ body[data-theme="storybook"] .theme-card.is-active {
   body[data-theme="storybook"] .canvas { padding: 24px 16px 84px; }
   body[data-theme="storybook"] .view-head__title { font-size: 1.9rem; }
 }
+
+
+/* Typography and theme-artwork repair */
+body[data-theme="storybook"] { --font-body: 'DM Sans', sans-serif; --font-display: 'Fraunces', Georgia, serif; }
+body[data-theme="storybook"] .theme-card { background-color: #FFFDF8; background-size: cover; background-position: center; }
+body[data-theme="storybook"] .theme-card::before { pointer-events: none; }
